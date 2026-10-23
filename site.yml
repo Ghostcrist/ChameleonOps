@@ -1,0 +1,7 @@
+---
+- name: Despliegue Servidor Web y MariaDB (Integrante 2)
+  hosts: localhost
+  become: true
+  roles:
+    - web
+    - mariadb

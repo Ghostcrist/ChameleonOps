@@ -1,0 +1,21 @@
+---
+- name: Instalacion de Apache, PHP y phpMyAdmin
+  zypper:
+    name:
+      - apache2
+      - php8
+      - apache2-mod_php8
+      - phpMyAdmin
+    state: present
+
+- name: Iniciar y habilitar Apache2
+  service:
+    name: apache2
+    state: started
+    enabled: true
+
+- name: Abrir puerto HTTP en el Firewall
+  firewall_cmd:
+    service: http
+    permanent: true
+    state: enabled
