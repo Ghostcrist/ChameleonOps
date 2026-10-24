@@ -1,0 +1,16 @@
+
+---
+- name: Diagnostico de maquinas destino
+  hosts: all
+  gather_facts: true
+  become: false
+
+  tasks:
+    - name: Mostrar informacion del servidor
+      ansible.builtin.debug:
+        msg:
+          - "Host Ansible: {{ inventory_hostname }}"
+          - "Sistema: {{ ansible_facts['distribution'] }}"
+          - "Version: {{ ansible_facts['distribution_version'] }}"
+          - "Arquitectura: {{ ansible_facts['architecture'] }}"
+          - "IP inventario: {{ ansible_host | default(inventory_hostname) }}"
