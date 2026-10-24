@@ -1,4 +1,9 @@
 ---
+- name: Cargar variables cifradas de Ansible Vault
+  ansible.builtin.include_vars:
+    file: roles/samba/vars/vault.yml
+  ignore_errors: true
+
 - name: Instalar paquetes de Samba
   ansible.builtin.package:
     name:
@@ -26,11 +31,18 @@
     group: "{{ samba_user }}"
     mode: '0770'
 
+- name: Verificar si el usuario ya existe en Samba
+  ansible.builtin.command: pdbedit -L -u {{ samba_user }}
+  register: smb_user_check
+  failed_when: false
+  changed_when: false
+  no_log: true
+
 - name: Crear usuario y contrasena en Samba
   ansible.builtin.shell: >
     (echo "{{ samba_password }}"; echo "{{ samba_password }}") | smbpasswd -s -a {{ samba_user }}
-  register: smb_pass_result
-  changed_when: "'Added user' in smb_pass_result.stdout or 'Updated password' in smb_pass_result.stdout"
+  when: smb_user_check.rc != 0
+  no_log: true
 
 - name: Desplegar configuracion smb.conf
   ansible.builtin.template:
@@ -40,6 +52,14 @@
     group: root
     mode: '0644'
   notify: Reiniciar servicio Samba
+
+- name: Abrir servicio Samba en el firewall
+  ansible.posix.firewalld:
+    service: samba
+    permanent: true
+    state: enabled
+    immediate: true
+  ignore_errors: true
 
 - name: Habilitar e iniciar servicio smb
   ansible.builtin.service:

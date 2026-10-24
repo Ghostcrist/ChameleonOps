@@ -15,6 +15,14 @@
     mode: '0600'
   notify: Reiniciar vsftpd
 
+- name: Abrir servicio FTP en el firewall
+  ansible.posix.firewalld:
+    service: ftp
+    permanent: true
+    state: enabled
+    immediate: true
+  ignore_errors: true
+
 - name: Habilitar e iniciar servicio vsftpd
   ansible.builtin.service:
     name: vsftpd
