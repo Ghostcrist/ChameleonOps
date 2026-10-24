@@ -1,0 +1,11 @@
+---
+- name: Instalacion del servicio vsftpd
+  zypper:
+    name: vsftpd
+    state: present
+
+- name: Iniciar y habilitar servicio vsftpd
+  service:
+    name: vsftpd
+    state: started
+    enabled: true
