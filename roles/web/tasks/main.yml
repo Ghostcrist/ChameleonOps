@@ -8,6 +8,11 @@
       - phpMyAdmin
     state: present
 
+- name: Crear archivo index.php de prueba
+  copy:
+    content: "<?php phpinfo(); ?>"
+    dest: /srv/www/htdocs/index.php
+
 - name: Iniciar y habilitar Apache2
   service:
     name: apache2
