@@ -15,7 +15,12 @@
     enabled: true
 
 - name: Abrir puerto HTTP en el Firewall
-  firewall_cmd:
-    service: http
-    permanent: true
-    state: enabled
+  command: firewall-cmd --add-service=http --permanent
+  register: firewall_result
+  changed_when: "'ALREADY_ENABLED' not in firewall_result.stderr"
+  ignore_errors: true
+
+- name: Recargar Firewall
+  command: firewall-cmd --reload
+  changed_when: false
+  ignore_errors: true
