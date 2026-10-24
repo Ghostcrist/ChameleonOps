@@ -1,0 +1,17 @@
+---
+- name: Verificar los permisos para tareas administrativas
+  hosts: all
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Comprobar el usuario efectivo
+      ansible.builtin.command: id -u
+      register: identificador
+      changed_when: false
+
+    - name: Confirmar que become funciona
+      ansible.builtin.assert:
+        that:
+          - identificador.stdout == '0'
+        fail_msg: 'El usuario remoto no puede elevar privilegios correctamente.'

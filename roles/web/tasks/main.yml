@@ -1,0 +1,4 @@
+---
+- name: Placeholder del rol web
+  ansible.builtin.debug:
+    msg: 'PENDIENTE: VM02 debe sustituir esta tarea por la automatizacion real de web'

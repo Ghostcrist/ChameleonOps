@@ -1,0 +1,30 @@
+# Contraseñas, credenciales y certificados/llaves privadas
+.vault_pass*
+vault_password*
+*.pem
+*.p12
+*.pfx
+*.key
+**/id_rsa
+**/id_ed25519
+**/ssh_host_*_key
+**/ssh_host_*_key.pub
+/ssh_config/
+/ans_aso.zip
+
+# Archivos locales
+*.retry
+*.log
+.venv/
+__pycache__/
+.idea/
+.vscode/
+.DS_Store
+
+# Las reglas de ignore NO sustituyen revisar git add y git diff --cached.
+
+# Archivos que no subiremos al repositorio
+*.zip
+host_vars/**/vault.yml
+.env
+.env.*

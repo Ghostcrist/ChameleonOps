@@ -1,0 +1,3 @@
+---
+# Variables personalizables de ftp; sin contrasenas.
+ftp_habilitado: true

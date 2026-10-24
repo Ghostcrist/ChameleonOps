@@ -1,0 +1,4 @@
+---
+- name: Placeholder del rol mariadb
+  ansible.builtin.debug:
+    msg: 'PENDIENTE: VM02 debe sustituir esta tarea por la automatizacion real de mariadb'

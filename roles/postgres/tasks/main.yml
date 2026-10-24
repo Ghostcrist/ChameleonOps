@@ -1,0 +1,4 @@
+---
+- name: Placeholder del rol postgres
+  ansible.builtin.debug:
+    msg: 'PENDIENTE: VM04 debe sustituir esta tarea por la automatizacion real de postgres'

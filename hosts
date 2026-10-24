@@ -1,0 +1,9 @@
+# LAS TRES IP POR LAS REALES
+[web]
+vm02 ansible_host=10.42.101.228
+
+[archivos]
+vm03 ansible_host=10.42.101.187
+
+[postgres]
+vm04 ansible_host=10.42.100.248

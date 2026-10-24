@@ -1,0 +1,4 @@
+---
+- name: Placeholder del rol samba
+  ansible.builtin.debug:
+    msg: 'PENDIENTE: VM03 debe sustituir esta tarea por la automatizacion real de samba'

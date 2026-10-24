@@ -1,0 +1,22 @@
+---
+# Al principio los roles contienen solo mensajes de prueba.
+# Se convierten en despliegues reales cuando el grupo implemente sus tareas.
+- name: Desplegar servidor web y MariaDB
+  hosts: web
+  become: true
+  roles:
+    - web
+    - mariadb
+
+- name: Desplegar servidor Samba y FTP
+  hosts: archivos
+  become: true
+  roles:
+    - samba
+    - ftp
+
+- name: Desplegar PostgreSQL
+  hosts: postgres
+  become: true
+  roles:
+    - postgres

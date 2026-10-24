@@ -1,0 +1,3 @@
+---
+# Variables personalizables de samba; sin contrasenas.
+samba_habilitado: true

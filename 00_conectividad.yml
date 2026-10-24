@@ -1,0 +1,8 @@
+---
+- name: Verificar SSH y Python en los destinos
+  hosts: all
+  gather_facts: false
+  become: false
+  tasks:
+    - name: Ejecutar Ansible ping
+      ansible.builtin.ping:

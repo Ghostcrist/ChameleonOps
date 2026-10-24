@@ -1,0 +1,3 @@
+---
+# Variables personalizables de postgres; sin contrasenas.
+postgres_habilitado: true
