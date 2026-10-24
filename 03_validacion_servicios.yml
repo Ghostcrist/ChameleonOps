@@ -1,0 +1,58 @@
+
+---
+# ChameleonOps - Validacion de servicios
+# VM01 Master
+#
+# Este playbook NO instala ni modifica servicios.
+# Solo comprueba su estado en las maquinas destino.
+
+- name: Validar servicios de las maquinas destino
+  hosts: all
+  gather_facts: false
+  become: true
+
+  vars:
+    # Por defecto solo informa el estado.
+    # En modo estricto falla si un servicio no funciona.
+    validacion_estricta: false
+
+    servicios_por_vm:
+      vm02:
+        - apache2.service
+        - mariadb.service
+
+      vm03:
+        - smb.service
+        - vsftpd.service
+
+      vm04:
+        - postgresql.service
+
+  tasks:
+
+    - name: Verificar que la VM existe en la configuracion
+      ansible.builtin.assert:
+        that:
+          - inventory_hostname in servicios_por_vm
+        fail_msg: "La VM no esta definida en servicios_por_vm"
+
+    - name: Recopilar estado de los servicios
+      ansible.builtin.service_facts:
+
+    - name: Mostrar estado de los servicios
+      ansible.builtin.debug:
+        msg:
+          - "Servidor: {{ inventory_hostname }}"
+          - "Servicio: {{ item }}"
+          - "Estado: {{ ansible_facts['services'].get(item, {}).get('state', 'NO ENCONTRADO') }}"
+          - "Inicio: {{ ansible_facts['services'].get(item, {}).get('status', 'NO DISPONIBLE') }}"
+      loop: "{{ servicios_por_vm[inventory_hostname] }}"
+
+    - name: Exigir servicios activos en modo estricto
+      ansible.builtin.assert:
+        that:
+          - ansible_facts['services'].get(item, {}).get('state', 'not-found') == 'running'
+        success_msg: "{{ item }} esta activo"
+        fail_msg: "{{ item }} no esta activo en {{ inventory_hostname }}"
+      loop: "{{ servicios_por_vm[inventory_hostname] }}"
+      when: validacion_estricta | bool
