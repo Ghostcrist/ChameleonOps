@@ -1,0 +1,14 @@
+[global]
+   workgroup = WORKGROUP
+   netbios name = SERVIDOR-ARCHIVOS
+   security = user
+   passdb backend = tdbsam
+
+[{{ samba_share_name }}]
+   path = {{ samba_share_path }}
+   browseable = yes
+   read only = no
+   guest ok = no
+   valid users = {{ samba_user }}
+   create mask = 0660
+   directory mask = 0770
