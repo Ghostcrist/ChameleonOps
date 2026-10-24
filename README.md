@@ -71,3 +71,5 @@ Repetir por cada host y ejecutar con `--ask-vault-pass`.
 - VM02 (web): roles `web` y `mariadb`.
 - VM03 (archivos): roles `samba` y `ftp`.
 - VM04 (BD): rol `postgres`.
+
+### Modificado y desplegado por: joelbtt
