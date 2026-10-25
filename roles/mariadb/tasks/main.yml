@@ -1,4 +1,21 @@
 ---
-- name: Placeholder del rol mariadb
-  ansible.builtin.debug:
-    msg: 'PENDIENTE: VM02 debe sustituir esta tarea por la automatizacion real de mariadb'
+- name: Instalar MariaDB
+  zypper:
+    name:
+      - mariadb
+      - mariadb-client
+    state: present
+
+- name: Iniciar y habilitar servicio MariaDB
+  service:
+    name: mariadb
+    state: started
+    enabled: true
+
+- name: Crear base de datos para MariaDB
+  command: mariadb -e "CREATE DATABASE IF NOT EXISTS app_mariadb;"
+  failed_when: false
+
+- name: Crear usuario joel1234 con contrasena mundolibre
+  command: mariadb -e "GRANT ALL PRIVILEGES ON app_mariadb.* TO 'joel1234'@'%' IDENTIFIED BY 'mundolibre'; FLUSH PRIVILEGES;"
+  failed_when: false
