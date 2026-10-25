@@ -1,3 +1,10 @@
 ---
-# Variables personalizables de postgres; sin contrasenas.
-postgres_habilitado: true
+postgres_db: prueba
+
+postgres_app_user: appuser
+
+postgres_listen_addresses: "*"
+
+postgres_vm02_ip: "192.168.100.129"
+
+postgres_auth_method: "scram-sha-256"
