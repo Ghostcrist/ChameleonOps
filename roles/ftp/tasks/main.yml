@@ -21,7 +21,6 @@
     permanent: true
     state: enabled
     immediate: true
-  ignore_errors: true
 
 - name: Habilitar e iniciar servicio vsftpd
   ansible.builtin.service:
