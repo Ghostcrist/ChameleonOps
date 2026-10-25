@@ -19,10 +19,19 @@
     line: "listen_addresses = '{{ postgres_listen_addresses }}'"
   notify: restart postgresql
 
+- name: Desplegar pg_hba.conf
+  ansible.builtin.template:
+    src: pg_hba.conf.j2
+    dest: /var/lib/pgsql/data/pg_hba.conf
+    owner: postgres
+    group: postgres
+    mode: '0640'
+  notify: restart postgresql
+
 - name: Crear usuario aplicación
   community.postgresql.postgresql_user:
     name: "{{ postgres_app_user }}"
-    password: "{{ postgres_app_password }}"
+    password: "{{ vault_postgres_password }}"
     encrypted: true
   become_user: postgres
   no_log: true
