@@ -1,9 +1,12 @@
-# LAS TRES IP POR LAS REALES
 [web]
-vm02 ansible_host=10.42.101.228
+vm02 ansible_host=192.168.0.30
 
 [archivos]
-vm03 ansible_host=10.42.101.187
+vm03 ansible_host=192.168.0.30
 
 [postgres]
-vm04 ansible_host=10.42.100.248
+vm04 ansible_host=192.168.0.30
+
+[all:vars]
+ansible_user=root
+ansible_connection=ssh
