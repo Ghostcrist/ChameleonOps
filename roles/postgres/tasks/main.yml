@@ -1,4 +1,34 @@
 ---
-- name: Placeholder del rol postgres
-  ansible.builtin.debug:
-    msg: 'PENDIENTE: VM04 debe sustituir esta tarea por la automatizacion real de postgres'
+- name: Instalar PostgreSQL
+  community.general.zypper:
+    name:
+      - postgresql-server
+      - postgresql-contrib
+    state: present
+
+- name: Iniciar PostgreSQL
+  ansible.builtin.systemd:
+    name: postgresql
+    enabled: true
+    state: started
+
+- name: Configurar listen_addresses
+  ansible.builtin.lineinfile:
+    path: /var/lib/pgsql/data/postgresql.conf
+    regexp: '^#?listen_addresses'
+    line: "listen_addresses = '{{ postgres_listen_addresses }}'"
+  notify: restart postgresql
+
+- name: Crear usuario aplicación
+  community.postgresql.postgresql_user:
+    name: "{{ postgres_app_user }}"
+    password: "{{ postgres_app_password }}"
+    encrypted: true
+  become_user: postgres
+  no_log: true
+
+- name: Crear base de datos
+  community.postgresql.postgresql_db:
+    name: "{{ postgres_db }}"
+    owner: "{{ postgres_app_user }}"
+  become_user: postgres
