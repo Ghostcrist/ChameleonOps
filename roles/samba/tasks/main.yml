@@ -1,4 +1,67 @@
 ---
-- name: Placeholder del rol samba
-  ansible.builtin.debug:
-    msg: 'PENDIENTE: VM03 debe sustituir esta tarea por la automatizacion real de samba'
+- name: Cargar variables cifradas de Ansible Vault
+  ansible.builtin.include_vars:
+    file: "{{ role_path }}/vars/vault.yml"
+
+- name: Instalar paquetes de Samba
+  ansible.builtin.package:
+    name:
+      - samba
+      - samba-client
+    state: present
+
+- name: Crear grupo de sistema para Samba
+  ansible.builtin.group:
+    name: "{{ samba_user }}"
+    state: present
+
+- name: Crear usuario Linux para Samba
+  ansible.builtin.user:
+    name: "{{ samba_user }}"
+    group: "{{ samba_user }}"
+    shell: /sbin/nologin
+    create_home: no
+
+- name: Crear directorio del recurso compartido
+  ansible.builtin.file:
+    path: "{{ samba_share_path }}"
+    state: directory
+    owner: "{{ samba_user }}"
+    group: "{{ samba_user }}"
+    mode: '0770'
+
+- name: Verificar si el usuario ya existe en Samba
+  ansible.builtin.command: pdbedit -L -u {{ samba_user }}
+  register: smb_user_check
+  failed_when: false
+  changed_when: false
+  no_log: true
+
+- name: Crear usuario y contrasena en Samba
+  ansible.builtin.command: smbpasswd -s -a {{ samba_user }}
+  args:
+    stdin: "{{ samba_password }}\n{{ samba_password }}\n"
+  when: smb_user_check.rc != 0
+  no_log: true
+
+- name: Desplegar configuracion smb.conf
+  ansible.builtin.template:
+    src: smb.conf.j2
+    dest: /etc/samba/smb.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Reiniciar servicio Samba
+
+- name: Abrir servicio Samba en el firewall
+  ansible.posix.firewalld:
+    service: samba
+    permanent: true
+    state: enabled
+    immediate: true
+
+- name: Habilitar e iniciar servicio smb
+  ansible.builtin.service:
+    name: smb
+    state: started
+    enabled: true

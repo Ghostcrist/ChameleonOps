@@ -1,2 +1,5 @@
 ---
-[]
+- name: Reiniciar vsftpd
+  ansible.builtin.service:
+    name: vsftpd
+    state: restarted

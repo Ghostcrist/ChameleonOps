@@ -1,4 +1,29 @@
 ---
-- name: Placeholder del rol ftp
-  ansible.builtin.debug:
-    msg: 'PENDIENTE: VM03 debe sustituir esta tarea por la automatizacion real de ftp'
+- name: Instalar servidor vsftpd
+  ansible.builtin.package:
+    name:
+      - vsftpd
+      - ftp
+    state: present
+
+- name: Desplegar plantilla vsftpd.conf
+  ansible.builtin.template:
+    src: vsftpd.conf.j2
+    dest: /etc/vsftpd.conf
+    owner: root
+    group: root
+    mode: '0600'
+  notify: Reiniciar vsftpd
+
+- name: Abrir servicio FTP en el firewall
+  ansible.posix.firewalld:
+    service: ftp
+    permanent: true
+    state: enabled
+    immediate: true
+
+- name: Habilitar e iniciar servicio vsftpd
+  ansible.builtin.service:
+    name: vsftpd
+    state: started
+    enabled: true

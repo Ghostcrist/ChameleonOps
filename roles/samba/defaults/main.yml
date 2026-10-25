@@ -1,3 +1,4 @@
 ---
-# Variables personalizables de samba; sin contrasenas.
-samba_habilitado: true
+samba_user: usuario_samba
+samba_share_name: compartido
+samba_share_path: /srv/samba/compartido
