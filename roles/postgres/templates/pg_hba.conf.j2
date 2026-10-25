@@ -1,0 +1,11 @@
+# Acceso administrativo local
+local   all             postgres                                peer
+
+# Usuarios locales
+local   all             all                                     peer
+
+# Localhost usando contraseña segura
+host    all             all             127.0.0.1/32            scram-sha-256
+
+# VM02 -> VM04
+host    all             all             {{ postgres_vm02_ip }}/32    scram-sha-256
