@@ -1,4 +1,63 @@
 ---
-- name: Placeholder del rol postgres
-  ansible.builtin.debug:
-    msg: 'PENDIENTE: VM04 debe sustituir esta tarea por la automatizacion real de postgres'
+- name: Cargar credenciales PostgreSQL
+  ansible.builtin.include_vars:
+    file: "{{ role_path }}/vars/vault.yml"
+  no_log: true
+
+- name: Instalar PostgreSQL
+  community.general.zypper:
+    name:
+      - postgresql-server
+      - postgresql-contrib
+      - python3-psycopg2
+    state: present
+
+- name: Iniciar PostgreSQL
+  ansible.builtin.systemd:
+    name: postgresql
+    enabled: true
+    state: started
+
+- name: Configurar listen_addresses
+  ansible.builtin.lineinfile:
+    path: /var/lib/pgsql/data/postgresql.conf
+    regexp: '^#?listen_addresses'
+    line: "listen_addresses = '{{ postgres_listen_addresses }}'"
+  notify: restart postgresql
+
+- name: Configurar password_encryption
+  ansible.builtin.lineinfile:
+    path: /var/lib/pgsql/data/postgresql.conf
+    regexp: '^#?password_encryption'
+    line: "password_encryption = '{{ postgres_auth_method }}'"
+  notify: restart postgresql
+
+- name: Desplegar pg_hba.conf
+  ansible.builtin.template:
+    src: pg_hba.conf.j2
+    dest: /var/lib/pgsql/data/pg_hba.conf
+    owner: postgres
+    group: postgres
+    mode: '0640'
+  notify: restart postgresql
+
+- name: Crear usuario aplicación
+  community.postgresql.postgresql_user:
+    name: "{{ postgres_app_user }}"
+    password: "{{ vault_postgres_password }}"
+    encrypted: true
+  become_user: postgres
+  no_log: true
+
+- name: Crear base de datos
+  community.postgresql.postgresql_db:
+    name: "{{ postgres_db }}"
+    owner: "{{ postgres_app_user }}"
+  become_user: postgres
+
+- name: Abrir puerto PostgreSQL
+  ansible.posix.firewalld:
+    port: 5432/tcp
+    permanent: true
+    state: enabled
+    immediate: true
