@@ -3,7 +3,6 @@
   ansible.builtin.package:
     name:
       - vsftpd
-      - ftp
     state: present
 
 - name: Desplegar plantilla vsftpd.conf
